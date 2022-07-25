@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Prodot.Patterns.Cqrs;
+﻿namespace Prodot.Patterns.Cqrs;
 
 public sealed class Pipeline
 {
