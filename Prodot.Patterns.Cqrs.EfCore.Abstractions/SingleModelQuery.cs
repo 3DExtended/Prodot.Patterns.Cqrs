@@ -5,5 +5,5 @@ public abstract class SingleModelQuery<TModel, TIdentifier, TIdentifierValue, TS
     where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
     where TSelf : SingleModelQuery<TModel, TIdentifier, TIdentifierValue, TSelf>
 {
-    public TIdentifier Id { get; init; } = default!;
+    public TIdentifier Id { get; set; } = default!;
 }
