@@ -24,7 +24,7 @@ public record Identifier<TIdentifierValue, TSelf> : IIdentifier<TIdentifierValue
         _valueFactory = (Func<TSelf>)lambda.Compile();
     }
 
-    public TIdentifierValue Value { get; protected set; } = default!;
+    public TIdentifierValue Value { get; set; } = default!;
 
     public static TSelf From(TIdentifierValue item)
     {
