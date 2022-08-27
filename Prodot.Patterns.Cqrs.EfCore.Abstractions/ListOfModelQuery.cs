@@ -9,7 +9,7 @@ public abstract class ListOfModelQuery<TModel, TIdentifier, TIdentifierValue, TS
     where TSelf : ListOfModelQuery<TModel, TIdentifier, TIdentifierValue, TSelf>
 {
     /// <summary>
-    /// If truem the result will be returned as successful even if not all specified Ids could be retrieved.
+    /// If true, the result will be returned as successful even if not all specified Ids could be retrieved.
     /// Otherwise, <see cref="Option.None"/> is returned in that case.
     /// </summary>
     public bool AllowPartialResultSet { get; init; }
