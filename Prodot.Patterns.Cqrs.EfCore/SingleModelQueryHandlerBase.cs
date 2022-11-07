@@ -25,7 +25,7 @@ public abstract class SingleModelQueryHandlerBase<TQuery, TModel, TIdentifier, T
             var databaseQuery = AddIncludes(context.Set<TEntity>().AsNoTracking());
 
             var entity = await databaseQuery
-               .FirstOrDefaultAsync(cp => cp.Id!.Equals(query.Id.Value), cancellationToken)
+               .FirstOrDefaultAsync(cp => cp.Id!.Equals(query.ModelId.Value), cancellationToken)
                .ConfigureAwait(false);
 
             return entity == null ? Option.None : Option.From(_mapper.Map<TModel>(entity));
