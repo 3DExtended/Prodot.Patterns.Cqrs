@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
     <PackageId>Prodot.Patterns.Cqrs.EfCore</PackageId>
@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="11.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-    <PackageReference Include="Prodot.Patterns.Cqrs.EfCore.Abstractions" Version="[6.0.0,7.0.0)" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+    <PackageReference Include="Prodot.Patterns.Cqrs.EfCore.Abstractions" Version="8.0.0.21" />
   </ItemGroup>
 
   <ItemGroup>

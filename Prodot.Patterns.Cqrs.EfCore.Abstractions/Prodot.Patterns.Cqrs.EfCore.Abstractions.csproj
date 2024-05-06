@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <PackageId>Prodot.Patterns.Cqrs.EfCore.Abstractions</PackageId>
@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prodot.Patterns.Cqrs.Abstractions" Version="[6.0.0,7.0.0)" />
+    <PackageReference Include="Prodot.Patterns.Cqrs.Abstractions" Version="8.0.0.21" />
   </ItemGroup>
 
   <ItemGroup>

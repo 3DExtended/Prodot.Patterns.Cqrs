@@ -4,7 +4,7 @@
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)prodot-Default.ruleset</CodeAnalysisRuleSet>
     <VersionPrefix>6.0.0</VersionPrefix>
     <PackageVersion>6.0.0.0</PackageVersion>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Deterministic>true</Deterministic>
     <LangVersion>10.0</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -21,10 +21,10 @@
     <WarningsAsErrors />
     <NoWarn>1701;1702;1591;0618;1573;7034;7035;NU1605</NoWarn>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <None Include="..\images\prodot-logo.png" Pack="true" PackagePath="\"/>
-</ItemGroup>
+    <None Include="..\images\prodot-logo.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406">

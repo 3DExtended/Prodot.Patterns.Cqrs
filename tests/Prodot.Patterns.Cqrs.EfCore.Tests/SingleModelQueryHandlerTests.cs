@@ -29,7 +29,7 @@ public class SingleModelQueryHandlerTests : EfCoreTestBase
 
         var query = new TestModelQuery
         {
-            Id = TestModelId.From(entity2.Id)
+            ModelId = TestModelId.From(entity2.Id)
         };
         var subjectUnderTest = new TestModelQueryHandler(Mapper, ContextFactory);
 
