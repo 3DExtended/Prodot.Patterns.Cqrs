@@ -1,6 +1,13 @@
 ﻿namespace Prodot.Patterns.Cqrs.EfCore;
 
-public abstract class DeleteCommandHandlerBase<TQuery, TModel, TIdentifier, TIdentifierValue, TContext, TEntity> : IQueryHandler<TQuery, Unit>
+public abstract class DeleteCommandHandlerBase<
+    TQuery,
+    TModel,
+    TIdentifier,
+    TIdentifierValue,
+    TContext,
+    TEntity
+> : IQueryHandler<TQuery, Unit>
     where TQuery : DeleteCommand<TModel, TIdentifier, TIdentifierValue, TQuery>
     where TModel : ModelBase<TIdentifier, TIdentifierValue>
     where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
@@ -18,11 +25,16 @@ public abstract class DeleteCommandHandlerBase<TQuery, TModel, TIdentifier, TIde
 
     public async Task<Option<Unit>> RunQueryAsync(TQuery query, CancellationToken cancellationToken)
     {
-        using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
+        using (
+            var context = await _contextFactory
+                .CreateDbContextAsync(cancellationToken)
+                .ConfigureAwait(false)
+        )
         {
-            var entity = await context.Set<TEntity>()
-               .FirstOrDefaultAsync(cp => cp.Id!.Equals(query.Id.Value), cancellationToken)
-               .ConfigureAwait(false);
+            var entity = await context
+                .Set<TEntity>()
+                .FirstOrDefaultAsync(cp => cp.Id!.Equals(query.Id.Value), cancellationToken)
+                .ConfigureAwait(false);
 
             if (entity == null)
             {

@@ -10,7 +10,10 @@ public class AutoRegistrationTests
         // Arrange
         var registry = QueryHandlerRegistry.Builder().WithPipelineAutoRegistration().Build();
         var factory = new DependencyInjectionQueryHandlerFactory();
-        factory.Services.AddSingleton<IQueryHandler<UnitQuery, Unit>, SimpleHasBeenCalledQueryHandler>();
+        factory.Services.AddSingleton<
+            IQueryHandler<UnitQuery, Unit>,
+            SimpleHasBeenCalledQueryHandler
+        >();
 
         var subjectUnderTest = new QueryProcessor(registry, factory);
 
@@ -18,7 +21,8 @@ public class AutoRegistrationTests
         var result = await new UnitQuery().RunAsync(subjectUnderTest, default);
 
         // Assert
-        var handler = (SimpleHasBeenCalledQueryHandler)factory.CreateQueryHandler<IQueryHandler<UnitQuery, Unit>, UnitQuery, Unit>();
+        var handler = (SimpleHasBeenCalledQueryHandler)
+            factory.CreateQueryHandler<IQueryHandler<UnitQuery, Unit>, UnitQuery, Unit>();
         handler.HasBeenCalled.Should().BeTrue();
     }
 }

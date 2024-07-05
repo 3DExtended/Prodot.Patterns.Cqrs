@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-
 using static Prodot.Patterns.Cqrs.QueryHandlerRegistry;
 
 namespace Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection;
@@ -14,11 +13,14 @@ public class ProdotPatternsCqrsOptions
         _queryHandlerRegistryBuilder = queryHandlerRegistryBuilder;
     }
 
-    public IReadOnlyList<Assembly> AssembliesToLoadQueryHandlersFrom => _assembliesToLoadQueryHandlersFrom;
+    public IReadOnlyList<Assembly> AssembliesToLoadQueryHandlersFrom =>
+        _assembliesToLoadQueryHandlersFrom;
 
     public IQueryHandlerRegistryBuilder QueryHandlerRegistryBuilder => _queryHandlerRegistryBuilder;
 
-    public ProdotPatternsCqrsOptions WithQueryHandlerPipelineConfiguration(Action<IQueryHandlerRegistryBuilder> configureRegistry)
+    public ProdotPatternsCqrsOptions WithQueryHandlerPipelineConfiguration(
+        Action<IQueryHandlerRegistryBuilder> configureRegistry
+    )
     {
         configureRegistry(QueryHandlerRegistryBuilder);
         return this;

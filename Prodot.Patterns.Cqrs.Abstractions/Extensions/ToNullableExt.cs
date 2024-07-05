@@ -12,14 +12,14 @@ public static class ToNullableExt
     /// <summary>
     ///   Returns a Nullable containing the value of the specified option or an empty Nullable otherwise.
     /// </summary>
-    public static T? ToNullable<T>(this Option<T> option) where T : struct
+    public static T? ToNullable<T>(this Option<T> option)
+        where T : struct
     {
-        return option.Match(
-          none: () => default(T?),
-          some: x => x);
+        return option.Match(none: () => default(T?), some: x => x);
     }
 
-    public static TR? ToNullable<T, TR>(this Option<T> item, Func<T, TR> selectFn) where TR : struct
+    public static TR? ToNullable<T, TR>(this Option<T> item, Func<T, TR> selectFn)
+        where TR : struct
     {
         return item.Select(selectFn).ToNullable();
     }

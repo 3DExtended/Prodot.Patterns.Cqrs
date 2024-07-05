@@ -7,7 +7,10 @@ public class EmployeeQueryHandler : IQueryHandler<EmployeeQuery, Employee>
 {
     public IQueryHandler<EmployeeQuery, Employee> Successor { get; set; } = default!;
 
-    public async Task<Option<Employee>> RunQueryAsync(EmployeeQuery query, CancellationToken cancellationToken)
+    public async Task<Option<Employee>> RunQueryAsync(
+        EmployeeQuery query,
+        CancellationToken cancellationToken
+    )
     {
         // normally we would load it from a database...
         await Task.Yield();

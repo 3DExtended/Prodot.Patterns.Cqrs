@@ -6,12 +6,17 @@ using System.Collections;
 
 namespace Prodot.Patterns.Cqrs;
 
-public struct Option<T> : IEquatable<Option<T>>, IStructuralEquatable, IStructuralComparable, IComparable<Option<T>>, IComparable
+public struct Option<T>
+    : IEquatable<Option<T>>,
+        IStructuralEquatable,
+        IStructuralComparable,
+        IComparable<Option<T>>,
+        IComparable
 {
     private readonly T _value;
 
     internal Option(T value)
-            : this()
+        : this()
     {
         _value = value;
         IsSome = true;
@@ -42,20 +47,19 @@ public struct Option<T> : IEquatable<Option<T>>, IStructuralEquatable, IStructur
     /// <summary>
     ///     Implicitly converts the specified value into an Option.
     /// </summary>
-    public static implicit operator Option<T>(T value)
-        => Option.From(value);
+    public static implicit operator Option<T>(T value) => Option.From(value);
 
     /// <summary>
     ///     Compares the specified Options for inequality.
     /// </summary>
-    public static bool operator !=(Option<T> left, Option<T> right)
-        => !((IStructuralEquatable)left).Equals(right, EqualityComparer<object>.Default);
+    public static bool operator !=(Option<T> left, Option<T> right) =>
+        !((IStructuralEquatable)left).Equals(right, EqualityComparer<object>.Default);
 
     /// <summary>
     ///     Compares the specified Options for equality.
     /// </summary>
-    public static bool operator ==(Option<T> left, Option<T> right)
-        => ((IStructuralEquatable)left).Equals(right, EqualityComparer<object>.Default);
+    public static bool operator ==(Option<T> left, Option<T> right) =>
+        ((IStructuralEquatable)left).Equals(right, EqualityComparer<object>.Default);
 
     int IStructuralComparable.CompareTo(object? other, IComparer comparer)
     {
@@ -78,11 +82,11 @@ public struct Option<T> : IEquatable<Option<T>>, IStructuralEquatable, IStructur
         return comparer.Compare(_value, otherOption._value);
     }
 
-    int IComparable<Option<T>>.CompareTo(Option<T> other)
-        => ((IStructuralComparable)this).CompareTo(other, Comparer<object>.Default);
+    int IComparable<Option<T>>.CompareTo(Option<T> other) =>
+        ((IStructuralComparable)this).CompareTo(other, Comparer<object>.Default);
 
-    int IComparable.CompareTo(object? obj)
-        => ((IStructuralComparable)this).CompareTo(obj, Comparer<object>.Default);
+    int IComparable.CompareTo(object? obj) =>
+        ((IStructuralComparable)this).CompareTo(obj, Comparer<object>.Default);
 
     bool IStructuralEquatable.Equals(object? other, IEqualityComparer comparer)
     {
@@ -93,29 +97,29 @@ public struct Option<T> : IEquatable<Option<T>>, IStructuralEquatable, IStructur
 
         var option = (Option<T>)other;
         return (IsSome && option.IsSome && comparer.Equals(_value, option._value))
-               || (!IsSome && !option.IsSome);
+            || (!IsSome && !option.IsSome);
     }
 
     /// <summary>
     ///     Compares the specified option with this one for equality.
     /// </summary>
-    public bool Equals(Option<T> other)
-        => ((IStructuralEquatable)this).Equals(other, EqualityComparer<object>.Default);
+    public bool Equals(Option<T> other) =>
+        ((IStructuralEquatable)this).Equals(other, EqualityComparer<object>.Default);
 
     /// <summary>
     ///     Indicates if this instance is equal to the specified object.
     /// </summary>
-    public override bool Equals(object? obj)
-        => ((IStructuralEquatable)this).Equals(obj, EqualityComparer<object>.Default);
+    public override bool Equals(object? obj) =>
+        ((IStructuralEquatable)this).Equals(obj, EqualityComparer<object>.Default);
 
-    int IStructuralEquatable.GetHashCode(IEqualityComparer comparer)
-        => CombineHashCodes(comparer.GetHashCode(IsSome), comparer.GetHashCode(_value!));
+    int IStructuralEquatable.GetHashCode(IEqualityComparer comparer) =>
+        CombineHashCodes(comparer.GetHashCode(IsSome), comparer.GetHashCode(_value!));
 
     /// <summary>
     ///     Returns the calculated hash code for this Option.
     /// </summary>
-    public override int GetHashCode()
-        => ((IStructuralEquatable)this).GetHashCode(EqualityComparer<object>.Default);
+    public override int GetHashCode() =>
+        ((IStructuralEquatable)this).GetHashCode(EqualityComparer<object>.Default);
 
     /// <summary>
     ///     Executes the specified side effect if this is None.
@@ -183,16 +187,13 @@ public struct Option<T> : IEquatable<Option<T>>, IStructuralEquatable, IStructur
         some.ThrowIfNull(nameof(some));
         none.ThrowIfNull(nameof(none));
 
-        return IsSome
-            ? some(_value)
-            : none();
+        return IsSome ? some(_value) : none();
     }
 
     /// <summary>
     ///     Returns the string representation of this option.
     /// </summary>
-    public override string ToString()
-        => IsSome ? $"Some({_value})" : "None";
+    public override string ToString() => IsSome ? $"Some({_value})" : "None";
 
     private static int CombineHashCodes(int h1, int h2) => ((h1 << 5) + h1) ^ h2;
 }

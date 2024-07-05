@@ -19,8 +19,6 @@ public static class SelectExt
     {
         selector.ThrowIfNull(nameof(selector));
 
-        return option.Match(
-            none: () => Option<TB>.None,
-            some: x => selector(x));
+        return option.Match(none: () => Option<TB>.None, some: x => selector(x));
     }
 }

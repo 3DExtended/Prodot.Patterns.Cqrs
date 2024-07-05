@@ -1,6 +1,7 @@
 ﻿namespace Prodot.Patterns.Cqrs;
 
-public interface IQueryHandler<TQuery, TResult> where TQuery : IQuery<TResult, TQuery>
+public interface IQueryHandler<TQuery, TResult>
+    where TQuery : IQuery<TResult, TQuery>
 {
     IQueryHandler<TQuery, TResult> Successor { get; set; }
 

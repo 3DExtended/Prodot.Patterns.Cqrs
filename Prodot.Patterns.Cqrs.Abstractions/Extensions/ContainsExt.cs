@@ -12,7 +12,11 @@ public static class ContainsExt
     /// <summary>
     ///     Returns a value that indicates if the specified option contains the desired value.
     /// </summary>
-    public static bool Contains<T>(this Option<T> option, T desiredValue, IEqualityComparer<T>? comparer = null)
+    public static bool Contains<T>(
+        this Option<T> option,
+        T desiredValue,
+        IEqualityComparer<T>? comparer = null
+    )
     {
         var c = comparer ?? EqualityComparer<T>.Default;
 
@@ -30,8 +34,6 @@ public static class ContainsExt
     {
         compare.ThrowIfNull(nameof(compare));
 
-        return option.Match(
-            none: () => false,
-            some: x => compare(x, desiredValue));
+        return option.Match(none: () => false, some: x => compare(x, desiredValue));
     }
 }

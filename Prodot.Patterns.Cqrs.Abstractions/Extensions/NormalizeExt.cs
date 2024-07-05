@@ -13,8 +13,6 @@ public static class NormalizeExt
     /// <summary>
     ///     Normalizes the specified <paramref name="option" /> of a nullable type into the value representation of that type.
     /// </summary>
-    public static Option<T> Normalize<T>(this Option<T?> option) where T : struct =>
-        option.Match(
-            none: () => Option.None,
-            some: Option.From);
+    public static Option<T> Normalize<T>(this Option<T?> option)
+        where T : struct => option.Match(none: () => Option.None, some: Option.From);
 }

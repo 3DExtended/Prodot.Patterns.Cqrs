@@ -9,9 +9,10 @@ public class FlattenExtTests
     [Fact]
     public void Nested_options_should_be_flattened_correctly() =>
         Prop.ForAll<string>(x =>
-        {
-            var nestedOption = Option.From(x);
+            {
+                var nestedOption = Option.From(x);
 
-            return Option.From(nestedOption).Flatten().Equals(nestedOption);
-        }).QuickCheckThrowOnFailure();
+                return Option.From(nestedOption).Flatten().Equals(nestedOption);
+            })
+            .QuickCheckThrowOnFailure();
 }

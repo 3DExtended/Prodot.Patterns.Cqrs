@@ -21,6 +21,7 @@ public static class RejectExt
 
         return option.Match(
             none: () => Option<T>.None,
-            some: x => predicate(x) ? Option<T>.None : option);
+            some: x => predicate(x) ? Option<T>.None : option
+        );
     }
 }

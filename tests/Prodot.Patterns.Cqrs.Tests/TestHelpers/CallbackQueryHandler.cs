@@ -1,6 +1,7 @@
 ﻿namespace Prodot.Patterns.Cqrs.Tests.TestHelpers;
 
-internal class CallbackQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult> where TQuery : IQuery<TResult, TQuery>
+internal class CallbackQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+    where TQuery : IQuery<TResult, TQuery>
 {
     public Action PostSuccessorCallback { get; set; } = () => { };
 
@@ -8,7 +9,10 @@ internal class CallbackQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TRe
 
     public IQueryHandler<TQuery, TResult> Successor { get; set; } = default!;
 
-    public async Task<Option<TResult>> RunQueryAsync(TQuery query, CancellationToken cancellationToken)
+    public async Task<Option<TResult>> RunQueryAsync(
+        TQuery query,
+        CancellationToken cancellationToken
+    )
     {
         PreSuccessorCallback?.Invoke();
         var result = await Successor.RunQueryAsync(query, cancellationToken).ConfigureAwait(false);

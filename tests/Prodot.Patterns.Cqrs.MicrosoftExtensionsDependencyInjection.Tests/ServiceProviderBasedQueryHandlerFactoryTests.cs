@@ -1,9 +1,6 @@
 ﻿using FluentAssertions;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection.Tests.TestHelpers;
-
 using Xunit;
 
 namespace Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection.Tests;
@@ -23,7 +20,11 @@ public class ServiceProviderBasedQueryHandlerFactoryTests
         var subjectUnderTest = new ServiceProviderBasedQueryHandlerFactory(provider);
 
         // act
-        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<GenericQueryHandler<UnitQuery, Unit>, UnitQuery, Unit>();
+        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<
+            GenericQueryHandler<UnitQuery, Unit>,
+            UnitQuery,
+            Unit
+        >();
 
         // assert
         ReferenceEquals(handler, handlerFromFactory).Should().BeTrue();
@@ -42,7 +43,11 @@ public class ServiceProviderBasedQueryHandlerFactoryTests
         var subjectUnderTest = new ServiceProviderBasedQueryHandlerFactory(provider);
 
         // act
-        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<IQueryHandler<UnitQuery, Unit>, UnitQuery, Unit>();
+        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<
+            IQueryHandler<UnitQuery, Unit>,
+            UnitQuery,
+            Unit
+        >();
 
         // assert
         ReferenceEquals(handler, handlerFromFactory).Should().BeTrue();
@@ -53,7 +58,10 @@ public class ServiceProviderBasedQueryHandlerFactoryTests
     {
         // arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddSingleton<IQueryHandler<UnitQuery, Unit>, SimpleHasBeenCalledQueryHandler>();
+        serviceCollection.AddSingleton<
+            IQueryHandler<UnitQuery, Unit>,
+            SimpleHasBeenCalledQueryHandler
+        >();
         var provider = serviceCollection.BuildServiceProvider();
 
         var handler = provider.GetRequiredService<IQueryHandler<UnitQuery, Unit>>();
@@ -61,7 +69,11 @@ public class ServiceProviderBasedQueryHandlerFactoryTests
         var subjectUnderTest = new ServiceProviderBasedQueryHandlerFactory(provider);
 
         // act
-        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<IQueryHandler<UnitQuery, Unit>, UnitQuery, Unit>();
+        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<
+            IQueryHandler<UnitQuery, Unit>,
+            UnitQuery,
+            Unit
+        >();
 
         // assert
         ReferenceEquals(handler, handlerFromFactory).Should().BeTrue();
@@ -80,7 +92,11 @@ public class ServiceProviderBasedQueryHandlerFactoryTests
         var subjectUnderTest = new ServiceProviderBasedQueryHandlerFactory(provider);
 
         // act
-        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<SimpleHasBeenCalledQueryHandler, UnitQuery, Unit>();
+        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<
+            SimpleHasBeenCalledQueryHandler,
+            UnitQuery,
+            Unit
+        >();
 
         // assert
         ReferenceEquals(handler, handlerFromFactory).Should().BeTrue();

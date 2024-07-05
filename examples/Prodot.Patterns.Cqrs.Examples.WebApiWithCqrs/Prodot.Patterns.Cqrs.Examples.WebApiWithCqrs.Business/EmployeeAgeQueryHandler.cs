@@ -6,7 +6,10 @@ public class EmployeeAgeQueryHandler : IQueryHandler<EmployeeAgeQuery, TimeSpan>
 {
     public IQueryHandler<EmployeeAgeQuery, TimeSpan> Successor { get; set; } = default!;
 
-    public Task<Option<TimeSpan>> RunQueryAsync(EmployeeAgeQuery query, CancellationToken cancellationToken)
+    public Task<Option<TimeSpan>> RunQueryAsync(
+        EmployeeAgeQuery query,
+        CancellationToken cancellationToken
+    )
     {
         // here we have some business logic
         return Task.FromResult(Option.From(DateTimeOffset.Now - query.Employee.BirthDate));

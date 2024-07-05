@@ -17,13 +17,14 @@ public static class SelectManyExt
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="select" /> is null.
     /// </exception>
-    public static Option<TB> SelectMany<TA, TB>(this Option<TA> option, Func<TA, Option<TB>> @select)
+    public static Option<TB> SelectMany<TA, TB>(
+        this Option<TA> option,
+        Func<TA, Option<TB>> @select
+    )
     {
         @select.ThrowIfNull(nameof(@select));
 
-        return option.Match(
-            none: () => Option<TB>.None,
-            some: @select);
+        return option.Match(none: () => Option<TB>.None, some: @select);
     }
 
     /// <summary>
@@ -33,16 +34,20 @@ public static class SelectManyExt
     /// <exception cref="ArgumentNullException">
     ///     <paramref name="optionSelector" /> or <paramref name="resultSelector" /> is null.
     /// </exception>
-    public static Option<TC> SelectMany<TA, TB, TC>(this Option<TA> option, Func<TA, Option<TB>> optionSelector,
-        Func<TA, TB, TC> resultSelector)
+    public static Option<TC> SelectMany<TA, TB, TC>(
+        this Option<TA> option,
+        Func<TA, Option<TB>> optionSelector,
+        Func<TA, TB, TC> resultSelector
+    )
     {
         optionSelector.ThrowIfNull(nameof(optionSelector));
         resultSelector.ThrowIfNull(nameof(resultSelector));
 
         return option.Match(
             none: () => Option<TC>.None,
-            some: a => optionSelector(a).Match(
-                none: () => Option<TC>.None,
-                some: b => resultSelector(a, b)));
+            some: a =>
+                optionSelector(a)
+                    .Match(none: () => Option<TC>.None, some: b => resultSelector(a, b))
+        );
     }
 }

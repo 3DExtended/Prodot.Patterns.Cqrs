@@ -3,7 +3,8 @@
 /// <summary>
 /// Base class for queries that retrieve a list of models.
 /// </summary>
-public abstract class ListOfModelQuery<TModel, TIdentifier, TIdentifierValue, TSelf> : IQuery<IReadOnlyList<TModel>, TSelf>
+public abstract class ListOfModelQuery<TModel, TIdentifier, TIdentifierValue, TSelf>
+    : IQuery<IReadOnlyList<TModel>, TSelf>
     where TModel : ModelBase<TIdentifier, TIdentifierValue>
     where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
     where TSelf : ListOfModelQuery<TModel, TIdentifier, TIdentifierValue, TSelf>

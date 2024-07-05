@@ -4,7 +4,10 @@ namespace Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddProdotPatternsCqrs(this IServiceCollection serviceCollection, Action<ProdotPatternsCqrsOptions> configure)
+    public static IServiceCollection AddProdotPatternsCqrs(
+        this IServiceCollection serviceCollection,
+        Action<ProdotPatternsCqrsOptions> configure
+    )
     {
         var registryBuilder = QueryHandlerRegistry.Builder();
 
@@ -16,14 +19,17 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddSingleton(options.QueryHandlerRegistryBuilder.Build());
 
         // register factory
-        serviceCollection.AddScoped<IQueryHandlerFactory, ServiceProviderBasedQueryHandlerFactory>();
+        serviceCollection.AddScoped<
+            IQueryHandlerFactory,
+            ServiceProviderBasedQueryHandlerFactory
+        >();
 
         // register queryprocessor
         serviceCollection.AddScoped<IQueryProcessor, QueryProcessor>();
 
         // Register Query handlers
-        var queryHandlerTypes = options.AssembliesToLoadQueryHandlersFrom
-            .SelectMany(a => a.GetTypes())
+        var queryHandlerTypes = options
+            .AssembliesToLoadQueryHandlersFrom.SelectMany(a => a.GetTypes())
             .Where(t => !t.IsAbstract && IsQueryHandlerType(t))
             .ToList();
 
@@ -48,14 +54,16 @@ public static class ServiceCollectionExtensions
         return serviceCollection;
     }
 
-    private static IReadOnlyList<Type> GetQueryHandlerInterfaces(Type type)
-        => type.GetInterfaces()
-                .Where(t => t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(IQueryHandler<,>)))
-                .ToList();
+    private static IReadOnlyList<Type> GetQueryHandlerInterfaces(Type type) =>
+        type.GetInterfaces()
+            .Where(t =>
+                t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(IQueryHandler<,>))
+            )
+            .ToList();
 
-    private static bool IsQueryHandlerType(Type type)
-            => type.GetInterfaces()
-                .Where(t => t.IsGenericType)
-                .Select(t => t.GetGenericTypeDefinition())
-                .Any(t => t.Equals(typeof(IQueryHandler<,>)));
+    private static bool IsQueryHandlerType(Type type) =>
+        type.GetInterfaces()
+            .Where(t => t.IsGenericType)
+            .Select(t => t.GetGenericTypeDefinition())
+            .Any(t => t.Equals(typeof(IQueryHandler<,>)));
 }

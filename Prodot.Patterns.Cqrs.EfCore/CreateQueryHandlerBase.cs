@@ -1,6 +1,13 @@
 ﻿namespace Prodot.Patterns.Cqrs.EfCore;
 
-public abstract class CreateQueryHandlerBase<TQuery, TModel, TIdentifier, TIdentifierValue, TContext, TEntity> : IQueryHandler<TQuery, TIdentifier>
+public abstract class CreateQueryHandlerBase<
+    TQuery,
+    TModel,
+    TIdentifier,
+    TIdentifierValue,
+    TContext,
+    TEntity
+> : IQueryHandler<TQuery, TIdentifier>
     where TQuery : CreateQuery<TModel, TIdentifier, TIdentifierValue, TQuery>
     where TModel : ModelBase<TIdentifier, TIdentifierValue>
     where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
@@ -18,11 +25,23 @@ public abstract class CreateQueryHandlerBase<TQuery, TModel, TIdentifier, TIdent
 
     public IQueryHandler<TQuery, TIdentifier> Successor { get; set; } = default!;
 
-    public async Task<Option<TIdentifier>> RunQueryAsync(TQuery query, CancellationToken cancellationToken)
+    public async Task<Option<TIdentifier>> RunQueryAsync(
+        TQuery query,
+        CancellationToken cancellationToken
+    )
     {
-        using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
+        using (
+            var context = await _contextFactory
+                .CreateDbContextAsync(cancellationToken)
+                .ConfigureAwait(false)
+        )
         {
-            var preparedModel = await PrepareModelAsync(query.ModelToCreate, context, cancellationToken).ConfigureAwait(false);
+            var preparedModel = await PrepareModelAsync(
+                    query.ModelToCreate,
+                    context,
+                    cancellationToken
+                )
+                .ConfigureAwait(false);
             if (preparedModel.IsNone)
             {
                 return Option.None;
@@ -36,6 +55,9 @@ public abstract class CreateQueryHandlerBase<TQuery, TModel, TIdentifier, TIdent
         }
     }
 
-    protected virtual Task<Option<TModel>> PrepareModelAsync(TModel model, TContext context, CancellationToken cancellationToken)
-        => Task.FromResult(Option.From(model));
+    protected virtual Task<Option<TModel>> PrepareModelAsync(
+        TModel model,
+        TContext context,
+        CancellationToken cancellationToken
+    ) => Task.FromResult(Option.From(model));
 }

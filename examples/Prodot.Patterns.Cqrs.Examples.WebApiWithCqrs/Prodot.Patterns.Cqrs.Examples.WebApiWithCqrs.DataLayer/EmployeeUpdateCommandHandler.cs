@@ -6,7 +6,10 @@ public class EmployeeUpdateCommandHandler : IQueryHandler<EmployeeUpdateCommand,
 {
     public IQueryHandler<EmployeeUpdateCommand, Unit> Successor { get; set; } = default!;
 
-    public async Task<Option<Unit>> RunQueryAsync(EmployeeUpdateCommand query, CancellationToken cancellationToken)
+    public async Task<Option<Unit>> RunQueryAsync(
+        EmployeeUpdateCommand query,
+        CancellationToken cancellationToken
+    )
     {
         // normally we would store it to a database...
         await Task.Yield();

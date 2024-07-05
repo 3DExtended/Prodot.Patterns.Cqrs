@@ -1,6 +1,13 @@
 ﻿namespace Prodot.Patterns.Cqrs.EfCore;
 
-public abstract class CountQueryHandlerBase<TQuery, TModel, TIdentifier, TIdentifierValue, TContext, TEntity> : IQueryHandler<TQuery, int>
+public abstract class CountQueryHandlerBase<
+    TQuery,
+    TModel,
+    TIdentifier,
+    TIdentifierValue,
+    TContext,
+    TEntity
+> : IQueryHandler<TQuery, int>
     where TQuery : CountQuery<TModel, TIdentifier, TIdentifierValue, TQuery>
     where TModel : ModelBase<TIdentifier, TIdentifierValue>
     where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
@@ -18,7 +25,11 @@ public abstract class CountQueryHandlerBase<TQuery, TModel, TIdentifier, TIdenti
 
     public async Task<Option<int>> RunQueryAsync(TQuery query, CancellationToken cancellationToken)
     {
-        using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
+        using (
+            var context = await _contextFactory
+                .CreateDbContextAsync(cancellationToken)
+                .ConfigureAwait(false)
+        )
         {
             var efquery = PrepareQuery(context.Set<TEntity>());
             return await efquery.CountAsync(cancellationToken).ConfigureAwait(false);

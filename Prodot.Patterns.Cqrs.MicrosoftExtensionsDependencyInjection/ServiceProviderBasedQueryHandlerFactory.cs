@@ -13,11 +13,11 @@ internal class ServiceProviderBasedQueryHandlerFactory : IQueryHandlerFactory
 
     public IQueryHandler<TQuery, TResult> CreateQueryHandler<THandlerType, TQuery, TResult>()
         where THandlerType : class, IQueryHandler<TQuery, TResult>
-        where TQuery : IQuery<TResult, TQuery>
-        => _serviceProvider.GetRequiredService<THandlerType>();
+        where TQuery : IQuery<TResult, TQuery> =>
+        _serviceProvider.GetRequiredService<THandlerType>();
 
     public void ReturnQueryHandler<TQuery, TResult>(IQueryHandler<TQuery, TResult> handler)
-            where TQuery : IQuery<TResult, TQuery>
+        where TQuery : IQuery<TResult, TQuery>
     {
         if (handler is IDisposable d)
         {

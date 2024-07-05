@@ -14,7 +14,5 @@ public static class FlattenExt
     ///     is contained.
     /// </summary>
     public static Option<T> Flatten<T>(this Option<Option<T>> nestedOption) =>
-        nestedOption.Match(
-            none: () => Option.None,
-            some: x => x);
+        nestedOption.Match(none: () => Option.None, some: x => x);
 }

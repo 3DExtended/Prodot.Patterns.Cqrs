@@ -15,16 +15,20 @@ public static class GetExt
     /// <exception cref="InvalidOperationException">
     ///     The option contains no value.
     /// </exception>
-    public static T Get<T>(this Option<T> option)
-        => option.Match(
-            none: () => { throw new InvalidOperationException("None does not contain a value."); },
-            some: x => x);
+    public static T Get<T>(this Option<T> option) =>
+        option.Match(
+            none: () =>
+            {
+                throw new InvalidOperationException("None does not contain a value.");
+            },
+            some: x => x
+        );
 
     /// <summary>
     ///     Returns the value of the specified option if it has one or the given fallback.
     /// </summary>
-    public static T? GetOrElse<T>(this Option<T> option, T? fallback)
-        => GetOrElse(option, () => fallback);
+    public static T? GetOrElse<T>(this Option<T> option, T? fallback) =>
+        GetOrElse(option, () => fallback);
 
     /// <summary>
     ///     Returns the value of the specified option if it has one or executes the given fallback func and returns the produced value.
@@ -36,8 +40,6 @@ public static class GetExt
     {
         fallback.ThrowIfNull(nameof(fallback));
 
-        return option.Match(
-            none: fallback,
-            some: x => x);
+        return option.Match(none: fallback, some: x => x);
     }
 }

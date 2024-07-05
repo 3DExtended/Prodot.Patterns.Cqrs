@@ -54,50 +54,75 @@ public sealed class QueryHandlerRegistry : IQueryHandlerRegistry
     [DebuggerStepThrough]
     public static IQueryHandlerRegistryBuilder Builder() => new QueryRegistryBuilder();
 
-    public IReadOnlyList<Pipeline> GetAllPipelines()
-        => _pipelineByQueryTypeDictionary.Values.ToList();
+    public IReadOnlyList<Pipeline> GetAllPipelines() =>
+        _pipelineByQueryTypeDictionary.Values.ToList();
 
     [DebuggerStepThrough]
     public Pipeline GetPipelineForQuery(Type requestType, IQueryHandlerFactory queryHandlerFactory)
     {
         return _pipelineByQueryTypeDictionary.TryGetValue(requestType, out var pipeline)
             ? pipeline
-            : (IsPipelineAutoRegistrationEnabled
-                ? TryRegisterAndReturnAutoPipeline(requestType, queryHandlerFactory)
-                : throw new MissingPipelineException(requestType));
+            : (
+                IsPipelineAutoRegistrationEnabled
+                    ? TryRegisterAndReturnAutoPipeline(requestType, queryHandlerFactory)
+                    : throw new MissingPipelineException(requestType)
+            );
     }
 
     [DebuggerStepThrough]
-    public void RegisterPipeline(Pipeline pipeline)
-        => _pipelineByQueryTypeDictionary.AddOrUpdate(pipeline.QueryType, pipeline, (_, _) => pipeline);
+    public void RegisterPipeline(Pipeline pipeline) =>
+        _pipelineByQueryTypeDictionary.AddOrUpdate(
+            pipeline.QueryType,
+            pipeline,
+            (_, _) => pipeline
+        );
 
-    private Pipeline TryRegisterAndReturnAutoPipeline(Type requestType, IQueryHandlerFactory queryHandlerFactory)
+    private Pipeline TryRegisterAndReturnAutoPipeline(
+        Type requestType,
+        IQueryHandlerFactory queryHandlerFactory
+    )
     {
         var queryType = requestType;
         var returnType = queryType.GetInterface("IQuery`2")?.GenericTypeArguments[0];
         if (queryType is null || returnType is null)
         {
-            throw new MissingPipelineException(requestType, new ArgumentException($"Could not determine query return type from query type {requestType.FullName} for auto registration"));
+            throw new MissingPipelineException(
+                requestType,
+                new ArgumentException(
+                    $"Could not determine query return type from query type {requestType.FullName} for auto registration"
+                )
+            );
         }
 
         var handlerType = typeof(IQueryHandler<,>).MakeGenericType(queryType, returnType);
-        var createQueryHandlerMethod = queryHandlerFactory.GetType().GetMethod("CreateQueryHandler");
-        var genericCreateQueryHandlerMethod = createQueryHandlerMethod!.MakeGenericMethod(handlerType, queryType, returnType);
+        var createQueryHandlerMethod = queryHandlerFactory
+            .GetType()
+            .GetMethod("CreateQueryHandler");
+        var genericCreateQueryHandlerMethod = createQueryHandlerMethod!.MakeGenericMethod(
+            handlerType,
+            queryType,
+            returnType
+        );
 
         var handler = genericCreateQueryHandlerMethod.Invoke(queryHandlerFactory, new object[0]);
         if (handler is null)
         {
-            throw new MissingPipelineException(requestType, new ArgumentException($"Could not get implementation for handler type {handlerType.Name} for auto registration"));
+            throw new MissingPipelineException(
+                requestType,
+                new ArgumentException(
+                    $"Could not get implementation for handler type {handlerType.Name} for auto registration"
+                )
+            );
         }
 
-        var pipeline = new Pipeline(queryType, returnType, new List<PipelinePart>()
-        {
-            new()
+        var pipeline = new Pipeline(
+            queryType,
+            returnType,
+            new List<PipelinePart>()
             {
-                HandlerConfiguration = null,
-                HandlerType = handlerType,
+                new() { HandlerConfiguration = null, HandlerType = handlerType, }
             }
-        });
+        );
 
         _pipelineByQueryTypeDictionary.AddOrUpdate(requestType, pipeline, (_, _) => pipeline);
 
@@ -110,13 +135,17 @@ public sealed class QueryHandlerRegistry : IQueryHandlerRegistry
         private bool _isPipelineAutoRegistrationEnabled;
         private List<Action<Action<Pipeline>>> _registerCallbacks = new();
 
-        public IQueryHandlerRegistryBuilder AddProfiles(params Assembly[] assembliesToSearchProfilesIn)
+        public IQueryHandlerRegistryBuilder AddProfiles(
+            params Assembly[] assembliesToSearchProfilesIn
+        )
         {
             _assembliesToSearchProfilesIn.AddRange(assembliesToSearchProfilesIn);
             return this;
         }
 
-        public IQueryHandlerRegistryBuilder AddRegisterCallback(Action<Action<Pipeline>> registerCallback)
+        public IQueryHandlerRegistryBuilder AddRegisterCallback(
+            Action<Action<Pipeline>> registerCallback
+        )
         {
             _registerCallbacks.Add(registerCallback);
             return this;
@@ -127,7 +156,11 @@ public sealed class QueryHandlerRegistry : IQueryHandlerRegistry
             var registry = new QueryHandlerRegistry(_isPipelineAutoRegistrationEnabled);
             foreach (var assembly in _assembliesToSearchProfilesIn)
             {
-                foreach (var profileType in assembly.GetTypes().Where(t => typeof(IPipelineProfile).IsAssignableFrom(t)))
+                foreach (
+                    var profileType in assembly
+                        .GetTypes()
+                        .Where(t => typeof(IPipelineProfile).IsAssignableFrom(t))
+                )
                 {
                     var profile = Activator.CreateInstance(profileType) as IPipelineProfile;
                     profile!.RegisterPipelines(registry.RegisterPipeline);

@@ -7,9 +7,15 @@ public static class TestSupportExtensions
     /// </summary>
     /// <param name="registry">The query handler registry.</param>
     /// <returns>A list of all registered query handler types.</returns>
-    public static IReadOnlyList<Type> GetAllRegisteredQueryHandlerTypes(this IQueryHandlerRegistry registry)
+    public static IReadOnlyList<Type> GetAllRegisteredQueryHandlerTypes(
+        this IQueryHandlerRegistry registry
+    )
     {
         var reg = (QueryHandlerRegistry)registry;
-        return reg.GetAllPipelines().SelectMany(p => p.Parts).Select(p => p.HandlerType).Distinct().ToList();
+        return reg.GetAllPipelines()
+            .SelectMany(p => p.Parts)
+            .Select(p => p.HandlerType)
+            .Distinct()
+            .ToList();
     }
 }

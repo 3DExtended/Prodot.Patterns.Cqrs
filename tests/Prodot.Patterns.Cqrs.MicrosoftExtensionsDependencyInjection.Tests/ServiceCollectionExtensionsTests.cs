@@ -1,9 +1,6 @@
 ﻿using FluentAssertions;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection.Tests.TestHelpers;
-
 using Xunit;
 
 namespace Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection.Tests;
@@ -15,17 +12,22 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection
-            .AddProdotPatternsCqrs(o =>
-                o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
-                .WithQueryHandlerPipelineConfiguration(c => c.AddProfiles(typeof(ServiceCollectionExtensionsTests).Assembly)));
+        serviceCollection.AddProdotPatternsCqrs(o =>
+            o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
+                .WithQueryHandlerPipelineConfiguration(c =>
+                    c.AddProfiles(typeof(ServiceCollectionExtensionsTests).Assembly)
+                )
+        );
 
         var provider = serviceCollection.BuildServiceProvider();
 
         var subjectUnderTest = provider.GetRequiredService<IQueryProcessor>();
 
         // act
-        var result = new GenericQuery<string>().RunAsyncWithDefaultExceptionIfNone(subjectUnderTest, default);
+        var result = new GenericQuery<string>().RunAsyncWithDefaultExceptionIfNone(
+            subjectUnderTest,
+            default
+        );
 
         // assert
         result.Should().NotBeNull();
@@ -36,10 +38,12 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection
-            .AddProdotPatternsCqrs(o =>
-                o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
-                .WithQueryHandlerPipelineConfiguration(c => c.AddProfiles(typeof(ServiceCollectionExtensionsTests).Assembly)));
+        serviceCollection.AddProdotPatternsCqrs(o =>
+            o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
+                .WithQueryHandlerPipelineConfiguration(c =>
+                    c.AddProfiles(typeof(ServiceCollectionExtensionsTests).Assembly)
+                )
+        );
 
         var provider = serviceCollection.BuildServiceProvider();
 
@@ -57,10 +61,10 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection
-            .AddProdotPatternsCqrs(o =>
-                o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
-                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration()));
+        serviceCollection.AddProdotPatternsCqrs(o =>
+            o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
+                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration())
+        );
 
         var provider = serviceCollection.BuildServiceProvider();
 
@@ -78,10 +82,10 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection
-            .AddProdotPatternsCqrs(o =>
-                o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
-                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration()));
+        serviceCollection.AddProdotPatternsCqrs(o =>
+            o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
+                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration())
+        );
 
         var provider = serviceCollection.BuildServiceProvider();
 
@@ -90,10 +94,16 @@ public class ServiceCollectionExtensionsTests
         var subjectUnderTest = provider.GetRequiredService<IQueryHandlerFactory>();
 
         // act
-        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<GenericQueryHandler<UnitQuery, Unit>, UnitQuery, Unit>();
+        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<
+            GenericQueryHandler<UnitQuery, Unit>,
+            UnitQuery,
+            Unit
+        >();
 
         // assert
-        ReferenceEquals(handler, handlerFromFactory).Should().BeFalse("because query handlers are registered as transient");
+        ReferenceEquals(handler, handlerFromFactory)
+            .Should()
+            .BeFalse("because query handlers are registered as transient");
     }
 
     [Fact]
@@ -101,20 +111,29 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection
-            .AddProdotPatternsCqrs(o =>
-                o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
-                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration()));
+        serviceCollection.AddProdotPatternsCqrs(o =>
+            o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
+                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration())
+        );
 
         var provider = serviceCollection.BuildServiceProvider();
 
         var subjectUnderTest = provider.GetRequiredService<IQueryHandlerFactory>();
 
         // act
-        var action = () => subjectUnderTest.CreateQueryHandler<IQueryHandler<GenericQuery<string>, string>, GenericQuery<string>, string>();
+        var action = () =>
+            subjectUnderTest.CreateQueryHandler<
+                IQueryHandler<GenericQuery<string>, string>,
+                GenericQuery<string>,
+                string
+            >();
 
         // assert
-        action.Should().Throw<InvalidOperationException>("because open generic implementations like GenericQueryHandler can not be resolved by interface");
+        action
+            .Should()
+            .Throw<InvalidOperationException>(
+                "because open generic implementations like GenericQueryHandler can not be resolved by interface"
+            );
     }
 
     [Fact]
@@ -122,10 +141,10 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection
-            .AddProdotPatternsCqrs(o =>
-                o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
-                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration()));
+        serviceCollection.AddProdotPatternsCqrs(o =>
+            o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
+                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration())
+        );
 
         var provider = serviceCollection.BuildServiceProvider();
 
@@ -134,10 +153,16 @@ public class ServiceCollectionExtensionsTests
         var subjectUnderTest = provider.GetRequiredService<IQueryHandlerFactory>();
 
         // act
-        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<SimpleHasBeenCalledQueryHandler, UnitQuery, Unit>();
+        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<
+            SimpleHasBeenCalledQueryHandler,
+            UnitQuery,
+            Unit
+        >();
 
         // assert
-        ReferenceEquals(handler, handlerFromFactory).Should().BeFalse("because query handlers are registered as transient");
+        ReferenceEquals(handler, handlerFromFactory)
+            .Should()
+            .BeFalse("because query handlers are registered as transient");
     }
 
     [Fact]
@@ -145,10 +170,10 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection
-            .AddProdotPatternsCqrs(o =>
-                o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
-                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration()));
+        serviceCollection.AddProdotPatternsCqrs(o =>
+            o.WithQueryHandlersFrom(typeof(SimpleHasBeenCalledQueryHandler).Assembly)
+                .WithQueryHandlerPipelineConfiguration(c => c.WithPipelineAutoRegistration())
+        );
 
         var provider = serviceCollection.BuildServiceProvider();
 
@@ -157,9 +182,15 @@ public class ServiceCollectionExtensionsTests
         var subjectUnderTest = provider.GetRequiredService<IQueryHandlerFactory>();
 
         // act
-        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<IQueryHandler<UnitQuery, Unit>, UnitQuery, Unit>();
+        var handlerFromFactory = subjectUnderTest.CreateQueryHandler<
+            IQueryHandler<UnitQuery, Unit>,
+            UnitQuery,
+            Unit
+        >();
 
         // assert
-        ReferenceEquals(handler, handlerFromFactory).Should().BeFalse("because query handlers are registered as transient");
+        ReferenceEquals(handler, handlerFromFactory)
+            .Should()
+            .BeFalse("because query handlers are registered as transient");
     }
 }

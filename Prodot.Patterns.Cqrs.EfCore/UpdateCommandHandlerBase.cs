@@ -1,6 +1,13 @@
 ﻿namespace Prodot.Patterns.Cqrs.EfCore;
 
-public abstract class UpdateCommandHandlerBase<TQuery, TModel, TIdentifier, TIdentifierValue, TContext, TEntity> : IQueryHandler<TQuery, Unit>
+public abstract class UpdateCommandHandlerBase<
+    TQuery,
+    TModel,
+    TIdentifier,
+    TIdentifierValue,
+    TContext,
+    TEntity
+> : IQueryHandler<TQuery, Unit>
     where TQuery : UpdateCommand<TModel, TIdentifier, TIdentifierValue, TQuery>
     where TModel : ModelBase<TIdentifier, TIdentifierValue>
     where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
@@ -20,12 +27,20 @@ public abstract class UpdateCommandHandlerBase<TQuery, TModel, TIdentifier, TIde
 
     public async Task<Option<Unit>> RunQueryAsync(TQuery query, CancellationToken cancellationToken)
     {
-        using (var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false))
+        using (
+            var context = await _contextFactory
+                .CreateDbContextAsync(cancellationToken)
+                .ConfigureAwait(false)
+        )
         {
             var entity = _mapper.Map<TEntity>(query.UpdatedModel);
 
-            var existingEntity = await context.Set<TEntity>()
-                .FirstOrDefaultAsync(e => e.Id!.Equals(query.UpdatedModel.Id.Value), cancellationToken)
+            var existingEntity = await context
+                .Set<TEntity>()
+                .FirstOrDefaultAsync(
+                    e => e.Id!.Equals(query.UpdatedModel.Id.Value),
+                    cancellationToken
+                )
                 .ConfigureAwait(false);
 
             if (existingEntity == null)

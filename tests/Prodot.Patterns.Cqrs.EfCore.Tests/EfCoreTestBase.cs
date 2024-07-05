@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,19 +14,18 @@ public abstract class EfCoreTestBase : IDisposable
         _runIdentifier = Guid.NewGuid().ToString();
 
         ServiceProvider = new ServiceCollection()
-            .AddDbContextFactory<TestDbContext>(o => o.UseSqlite($"DataSource=file:memdb{_runIdentifier}?mode=memory&cache=shared"))
+            .AddDbContextFactory<TestDbContext>(o =>
+                o.UseSqlite($"DataSource=file:memdb{_runIdentifier}?mode=memory&cache=shared")
+            )
             .BuildServiceProvider();
 
         Mapper = new MapperConfiguration(o =>
-            {
-                o.CreateMap<TestModel, TestEntity>().ReverseMap();
-                o.CreateMap<TestEntity, TestEntity>();
-                o.CreateMap<TestModelId, int>()
-                    .ConvertUsing((tmid, _) => tmid.Value);
-                o.CreateMap<int, TestModelId>()
-                    .ConvertUsing((id, _) => TestModelId.From(id));
-            })
-            .CreateMapper();
+        {
+            o.CreateMap<TestModel, TestEntity>().ReverseMap();
+            o.CreateMap<TestEntity, TestEntity>();
+            o.CreateMap<TestModelId, int>().ConvertUsing((tmid, _) => tmid.Value);
+            o.CreateMap<int, TestModelId>().ConvertUsing((id, _) => TestModelId.From(id));
+        }).CreateMapper();
 
         // initialize test database
         ContextFactory = ServiceProvider.GetRequiredService<IDbContextFactory<TestDbContext>>();

@@ -9,40 +9,38 @@ public class ToOptionExtTests
     [Fact]
     public void Converting_nullable_values_to_options_should_yield_None_for_null_otherwise_a_Some_containing_the_value()
     {
-        Prop.ForAll<int?>(x =>
-            x.ToOption().Equals(Option.From(x)))
-          .QuickCheckThrowOnFailure();
+        Prop.ForAll<int?>(x => x.ToOption().Equals(Option.From(x))).QuickCheckThrowOnFailure();
     }
 
     [Fact]
     public void Converting_nullable_values_to_options_with_custom_mapping_and_magic_null_value_should_yield_None_for_null_otherwise_a_Some_containing_the_value()
     {
-        Prop.ForAll<int>(x => x.ToOptionMappedOrNoneIf(1, CustomType.Create).Equals(x == 1 ? Option.None : x.ToOption().Select(CustomType.Create)))
-          .QuickCheckThrowOnFailure();
+        Prop.ForAll<int>(x =>
+                x.ToOptionMappedOrNoneIf(1, CustomType.Create)
+                    .Equals(x == 1 ? Option.None : x.ToOption().Select(CustomType.Create))
+            )
+            .QuickCheckThrowOnFailure();
     }
 
     [Fact]
     public void Converting_nullable_values_to_options_with_custom_mapping_should_yield_None_for_null_otherwise_a_Some_containing_the_value()
     {
-        Prop.ForAll<int?>(x => x.ToOptionMapped(CustomType.Create).Equals(x.ToOption().Select(CustomType.Create)))
-          .QuickCheckThrowOnFailure();
+        Prop.ForAll<int?>(x =>
+                x.ToOptionMapped(CustomType.Create).Equals(x.ToOption().Select(CustomType.Create))
+            )
+            .QuickCheckThrowOnFailure();
     }
 
     [Fact]
-    public void
-      Converting_reference_values_to_options_should_yield_None_for_null_otherwise_a_Some_containing_the_value()
+    public void Converting_reference_values_to_options_should_yield_None_for_null_otherwise_a_Some_containing_the_value()
     {
-        Prop.ForAll<string>(x =>
-            x.ToOption().Equals(Option.From(x)))
-          .QuickCheckThrowOnFailure();
+        Prop.ForAll<string>(x => x.ToOption().Equals(Option.From(x))).QuickCheckThrowOnFailure();
     }
 
     [Fact]
     public void Converting_values_to_options_should_yield_None_for_null_otherwise_a_Some_containing_the_value()
     {
-        Prop.ForAll<int>(x =>
-            x.ToOption().Equals(x))
-          .QuickCheckThrowOnFailure();
+        Prop.ForAll<int>(x => x.ToOption().Equals(x)).QuickCheckThrowOnFailure();
     }
 
     private class CustomType

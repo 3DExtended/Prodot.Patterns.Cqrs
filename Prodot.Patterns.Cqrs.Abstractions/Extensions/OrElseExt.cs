@@ -47,8 +47,6 @@ public static class OrElseExt
     {
         fallback.ThrowIfNull(nameof(fallback));
 
-        return option.IsSome
-            ? option
-            : fallback();
+        return option.IsSome ? option : fallback();
     }
 }

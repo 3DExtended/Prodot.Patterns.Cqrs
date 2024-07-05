@@ -17,6 +17,6 @@ internal static class ObjectExtensions
     }
 
     [DoesNotReturn]
-    private static void ThrowArgumentNullException(string name)
-        => throw new ArgumentNullException(name);
+    private static void ThrowArgumentNullException(string name) =>
+        throw new ArgumentNullException(name);
 }

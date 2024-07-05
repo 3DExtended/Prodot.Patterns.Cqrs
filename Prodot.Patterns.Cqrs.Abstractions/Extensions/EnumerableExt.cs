@@ -21,17 +21,22 @@ public static class EnumerableExt
         enumerable.ThrowIfNull(nameof(enumerable));
         fold.ThrowIfNull(nameof(fold));
 
-        return enumerable
-            .Aggregate(Option<T>.None, (accu, current) =>
+        return enumerable.Aggregate(
+            Option<T>.None,
+            (accu, current) =>
             {
                 var currentOption = Option.From(current);
 
                 return accu.Match(
                     none: () => currentOption,
-                    some: previousValue => currentOption.Match(
-                        none: () => previousValue,
-                        some: currentValue => fold(previousValue, currentValue)));
-            });
+                    some: previousValue =>
+                        currentOption.Match(
+                            none: () => previousValue,
+                            some: currentValue => fold(previousValue, currentValue)
+                        )
+                );
+            }
+        );
     }
 
     /// <summary>
@@ -41,23 +46,31 @@ public static class EnumerableExt
     /// <exception cref="ArgumentNullException">
     ///     The enumerable argument or fold is null.
     /// </exception>
-    public static Option<T> AggregateOptionalNullable<T>(this IEnumerable<T?> enumerable, Func<T, T, T> fold)
+    public static Option<T> AggregateOptionalNullable<T>(
+        this IEnumerable<T?> enumerable,
+        Func<T, T, T> fold
+    )
         where T : struct
     {
         enumerable.ThrowIfNull(nameof(enumerable));
         fold.ThrowIfNull(nameof(fold));
 
-        return enumerable
-            .Aggregate(Option<T>.None, (accu, current) =>
+        return enumerable.Aggregate(
+            Option<T>.None,
+            (accu, current) =>
             {
                 var currentOption = Option.From(current);
 
                 return accu.Match(
                     none: () => currentOption,
-                    some: previousValue => currentOption.Match(
-                        none: () => previousValue,
-                        some: currentValue => fold(previousValue, currentValue)));
-            });
+                    some: previousValue =>
+                        currentOption.Match(
+                            none: () => previousValue,
+                            some: currentValue => fold(previousValue, currentValue)
+                        )
+                );
+            }
+        );
     }
 
     /// <summary>
@@ -82,9 +95,7 @@ public static class EnumerableExt
             option.IfSome(x => results.Add(x));
         }
 
-        return results.Count == 0
-            ? Option.None
-            : Option.From(results.AsEnumerable());
+        return results.Count == 0 ? Option.None : Option.From(results.AsEnumerable());
     }
 
     /// <summary>
@@ -94,7 +105,8 @@ public static class EnumerableExt
     /// <exception cref="ArgumentNullException">
     ///     The enumerable argument is null.
     /// </exception>
-    public static Option<IEnumerable<T>> AllOrNone<T>(this IEnumerable<Option<T?>> enumerable) where T : struct
+    public static Option<IEnumerable<T>> AllOrNone<T>(this IEnumerable<Option<T?>> enumerable)
+        where T : struct
     {
         enumerable.ThrowIfNull(nameof(enumerable));
 
@@ -115,29 +127,33 @@ public static class EnumerableExt
             });
         }
 
-        return results.Count == 0
-            ? Option.None
-            : Option.From(results.AsEnumerable());
+        return results.Count == 0 ? Option.None : Option.From(results.AsEnumerable());
     }
 
     /// <summary>
     ///     Returns all values in the specified option of IEnumerable as options, if it contains an enumerable.
     ///     If the contained enumerable is empty or None is provided, an empty enumerable is returned.
     /// </summary>
-    public static IEnumerable<Option<T>> Exchange<T>(this Option<IEnumerable<T>> optionalEnumerable) =>
+    public static IEnumerable<Option<T>> Exchange<T>(
+        this Option<IEnumerable<T>> optionalEnumerable
+    ) =>
         optionalEnumerable.Match(
             none: Enumerable.Empty<Option<T>>,
-            some: xs => xs.Select(Option.From));
+            some: xs => xs.Select(Option.From)
+        );
 
     /// <summary>
     ///     Returns all values in the specified option of IEnumerable as options, if it contains an enumerable.
     ///     If the contained IEnumerable is empty or None is provided, an empty enumerable is returned.
     /// </summary>
-    public static IEnumerable<Option<T>> Exchange<T>(this Option<IEnumerable<T?>> optionalEnumerable)
+    public static IEnumerable<Option<T>> Exchange<T>(
+        this Option<IEnumerable<T?>> optionalEnumerable
+    )
         where T : struct =>
-            optionalEnumerable.Match(
-                none: Enumerable.Empty<Option<T>>,
-                some: xs => xs.Select(Option.From));
+        optionalEnumerable.Match(
+            none: Enumerable.Empty<Option<T>>,
+            some: xs => xs.Select(Option.From)
+        );
 
     /// <summary>
     ///     Returns all values in the specified option of Array as options, if it contains an array.
@@ -146,16 +162,19 @@ public static class EnumerableExt
     public static Option<T>[] Exchange<T>(this Option<T[]> optionalArray) =>
         optionalArray.Match(
             none: () => new Option<T>[0],
-            some: xs => xs.Select(Option.From).ToArray());
+            some: xs => xs.Select(Option.From).ToArray()
+        );
 
     /// <summary>
     ///     Returns all values in the specified option of Array as options, if it contains an array.
     ///     If the contained array is empty or None is provided, an empty array is returned.
     /// </summary>
-    public static Option<T>[] Exchange<T>(this Option<T?[]> optionalArray) where T : struct =>
+    public static Option<T>[] Exchange<T>(this Option<T?[]> optionalArray)
+        where T : struct =>
         optionalArray.Match(
             none: () => new Option<T>[0],
-            some: xs => xs.Select(Option.From).ToArray());
+            some: xs => xs.Select(Option.From).ToArray()
+        );
 
     /// <summary>
     ///     Returns the first value of the specified enumerable wrapped in an option.
@@ -183,7 +202,8 @@ public static class EnumerableExt
     /// <exception cref="ArgumentNullException">
     ///     The enumerable argument is null.
     /// </exception>
-    public static Option<T> FirstOptional<T>(this IEnumerable<T?> enumerable) where T : struct
+    public static Option<T> FirstOptional<T>(this IEnumerable<T?> enumerable)
+        where T : struct
     {
         enumerable.ThrowIfNull(nameof(enumerable));
 
@@ -207,9 +227,7 @@ public static class EnumerableExt
         enumerable.ThrowIfNull(nameof(enumerable));
 
         var xs = enumerable.ToList();
-        return xs.Count == 0
-            ? Option.None
-            : Option.From(xs[xs.Count - 1]);
+        return xs.Count == 0 ? Option.None : Option.From(xs[xs.Count - 1]);
     }
 
     /// <summary>
@@ -219,14 +237,13 @@ public static class EnumerableExt
     /// <exception cref="ArgumentNullException">
     ///     The enumerable argument is null.
     /// </exception>
-    public static Option<T> LastOptional<T>(this IEnumerable<T?> enumerable) where T : struct
+    public static Option<T> LastOptional<T>(this IEnumerable<T?> enumerable)
+        where T : struct
     {
         enumerable.ThrowIfNull(nameof(enumerable));
 
         var xs = enumerable.ToList();
-        return xs.Count == 0
-            ? Option.None
-            : Option.From(xs[xs.Count - 1]);
+        return xs.Count == 0 ? Option.None : Option.From(xs[xs.Count - 1]);
     }
 
     /// <summary>
@@ -240,9 +257,12 @@ public static class EnumerableExt
         enumerable.ThrowIfNull(nameof(enumerable));
 
         return enumerable
-            .Select(o => o.Match(
-                none: () => new { hasVal = false, val = default(T) },
-                some: x => new { hasVal = true, val = (T?)x }))
+            .Select(o =>
+                o.Match(
+                    none: () => new { hasVal = false, val = default(T) },
+                    some: x => new { hasVal = true, val = (T?)x }
+                )
+            )
             .Where(o => o.hasVal)
             .Select(o => o.val!);
     }
@@ -253,14 +273,18 @@ public static class EnumerableExt
     /// <exception cref="ArgumentNullException">
     ///     The enumerable argument is null.
     /// </exception>
-    public static IEnumerable<T> SelectValues<T>(this IEnumerable<Option<T?>> enumerable) where T : struct
+    public static IEnumerable<T> SelectValues<T>(this IEnumerable<Option<T?>> enumerable)
+        where T : struct
     {
         enumerable.ThrowIfNull(nameof(enumerable));
 
         return enumerable
-            .Select(o => o.Match(
-                none: () => new { hasVal = false, val = default(T?) },
-                some: x => new { hasVal = x.HasValue, val = x }))
+            .Select(o =>
+                o.Match(
+                    none: () => new { hasVal = false, val = default(T?) },
+                    some: x => new { hasVal = x.HasValue, val = x }
+                )
+            )
             .Where(o => o.hasVal)
             .Select(o => o.val!.Value);
     }
@@ -281,9 +305,7 @@ public static class EnumerableExt
         enumerable.ThrowIfNull(nameof(enumerable));
 
         var xs = enumerable.ToList();
-        return xs.Count == 0
-            ? Option.None
-            : Option.From(xs.SingleOrDefault()!);
+        return xs.Count == 0 ? Option.None : Option.From(xs.SingleOrDefault()!);
     }
 
     /// <summary>
@@ -297,14 +319,13 @@ public static class EnumerableExt
     /// <exception cref="InvalidOperationException">
     ///     The enumerable contains more than one element.
     /// </exception>
-    public static Option<T> SingleOptional<T>(this IEnumerable<T?> enumerable) where T : struct
+    public static Option<T> SingleOptional<T>(this IEnumerable<T?> enumerable)
+        where T : struct
     {
         enumerable.ThrowIfNull(nameof(enumerable));
 
         var xs = enumerable.ToList();
-        return xs.Count == 0
-            ? Option.None
-            : Option.From(xs.SingleOrDefault());
+        return xs.Count == 0 ? Option.None : Option.From(xs.SingleOrDefault());
     }
 
     /// <summary>
@@ -318,15 +339,16 @@ public static class EnumerableExt
     /// <exception cref="InvalidOperationException">
     ///     The enumerable contains more than one element.
     /// </exception>
-    public static Option<T> SingleOptional<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+    public static Option<T> SingleOptional<T>(
+        this IEnumerable<T> enumerable,
+        Func<T, bool> predicate
+    )
     {
         enumerable.ThrowIfNull(nameof(enumerable));
         predicate.ThrowIfNull(nameof(predicate));
 
         var xs = enumerable.ToList();
-        return xs.Count == 0
-            ? Option.None
-            : Option.From(xs.SingleOrDefault(predicate)!);
+        return xs.Count == 0 ? Option.None : Option.From(xs.SingleOrDefault(predicate)!);
     }
 
     /// <summary>
@@ -340,7 +362,10 @@ public static class EnumerableExt
     /// <exception cref="InvalidOperationException">
     ///     The enumerable contains more than one element.
     /// </exception>
-    public static Option<T> SingleOptionalNullable<T>(this IEnumerable<T?> enumerable, Func<T, bool> predicate)
+    public static Option<T> SingleOptionalNullable<T>(
+        this IEnumerable<T?> enumerable,
+        Func<T, bool> predicate
+    )
         where T : struct
     {
         enumerable.ThrowIfNull(nameof(enumerable));

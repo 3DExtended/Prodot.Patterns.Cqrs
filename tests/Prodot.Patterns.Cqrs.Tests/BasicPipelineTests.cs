@@ -13,14 +13,17 @@ public class BasicPipelineTests
         var pipeline = new PipelineBuilder<UnitQuery, Unit>()
             .With<CallbackQueryHandler<UnitQuery, Unit>>()
             .Build();
-        var registry = QueryHandlerRegistry.Builder()
+        var registry = QueryHandlerRegistry
+            .Builder()
             .AddRegisterCallback(r =>
             {
                 r(pipeline);
             })
             .Build();
-        var factory = new CallbackQueryHandlerFactory(() => preCall = Interlocked.Increment(ref callCounter),
-            () => postCall = Interlocked.Increment(ref callCounter));
+        var factory = new CallbackQueryHandlerFactory(
+            () => preCall = Interlocked.Increment(ref callCounter),
+            () => postCall = Interlocked.Increment(ref callCounter)
+        );
 
         var subjectUnderTest = new QueryProcessor(registry, factory);
 
@@ -43,13 +46,15 @@ public class BasicPipelineTests
         var pipeline = new PipelineBuilder<UnitQuery, Unit>()
             .With<ConfigurableCallbackQueryHandler<UnitQuery, Unit>, bool>(true)
             .Build();
-        var registry = QueryHandlerRegistry.Builder()
+        var registry = QueryHandlerRegistry
+            .Builder()
             .AddRegisterCallback(r =>
             {
                 r(pipeline);
             })
             .Build();
-        var factory = new CallbackQueryHandlerFactory(config =>
+        var factory = new CallbackQueryHandlerFactory(
+            config =>
             {
                 config.Should().Be(true);
                 preCall = Interlocked.Increment(ref callCounter);
@@ -58,7 +63,8 @@ public class BasicPipelineTests
             {
                 config.Should().Be(true);
                 postCall = Interlocked.Increment(ref callCounter);
-            });
+            }
+        );
 
         var subjectUnderTest = new QueryProcessor(registry, factory);
 

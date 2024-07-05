@@ -6,15 +6,8 @@ public class CreateQueryHandlerTests : EfCoreTestBase
     public async Task RunQueryAsync_CreatesModelSuccessfully()
     {
         // Arrange
-        var model = new TestModel
-        {
-            Id = TestModelId.From(0),
-            StringProperty = "Bla"
-        };
-        var query = new TestModelCreateQuery
-        {
-            ModelToCreate = model,
-        };
+        var model = new TestModel { Id = TestModelId.From(0), StringProperty = "Bla" };
+        var query = new TestModelCreateQuery { ModelToCreate = model, };
         var subjectUnderTest = new TestModelCreateQueryHandler(Mapper, ContextFactory);
 
         // Act

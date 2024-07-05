@@ -19,8 +19,6 @@ public static class WhereExt
     {
         predicate.ThrowIfNull(nameof(predicate));
 
-        return option.Match(
-            none: () => option,
-            some: x => predicate(x) ? x : Option<T>.None);
+        return option.Match(none: () => option, some: x => predicate(x) ? x : Option<T>.None);
     }
 }

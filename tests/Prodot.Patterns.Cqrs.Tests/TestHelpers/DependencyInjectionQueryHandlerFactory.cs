@@ -23,10 +23,9 @@ public class DependencyInjectionQueryHandlerFactory : IQueryHandlerFactory
 
     public IQueryHandler<TQuery, TResult> CreateQueryHandler<THandlerType, TQuery, TResult>()
         where THandlerType : class, IQueryHandler<TQuery, TResult>
-        where TQuery : IQuery<TResult, TQuery>
-        => ServiceProvider.GetRequiredService<THandlerType>();
+        where TQuery : IQuery<TResult, TQuery> =>
+        ServiceProvider.GetRequiredService<THandlerType>();
 
-    public void ReturnQueryHandler<TQuery, TResult>(IQueryHandler<TQuery, TResult> handler) where TQuery : IQuery<TResult, TQuery>
-    {
-    }
+    public void ReturnQueryHandler<TQuery, TResult>(IQueryHandler<TQuery, TResult> handler)
+        where TQuery : IQuery<TResult, TQuery> { }
 }

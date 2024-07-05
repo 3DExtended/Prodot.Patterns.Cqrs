@@ -13,7 +13,10 @@ internal class CallbackQueryHandlerFactory : IQueryHandlerFactory
         _postSuccessorCallback = postSuccessorCallback;
     }
 
-    public CallbackQueryHandlerFactory(Action<bool> preSuccessorCallbackWithConfiguration, Action<bool> postSuccessorCallbackWithConfiguration)
+    public CallbackQueryHandlerFactory(
+        Action<bool> preSuccessorCallbackWithConfiguration,
+        Action<bool> postSuccessorCallbackWithConfiguration
+    )
     {
         _preSuccessorCallbackWithConfiguration = preSuccessorCallbackWithConfiguration;
         _postSuccessorCallbackWithConfiguration = postSuccessorCallbackWithConfiguration;
@@ -39,7 +42,6 @@ internal class CallbackQueryHandlerFactory : IQueryHandlerFactory
         };
     }
 
-    public void ReturnQueryHandler<TQuery, TResult>(IQueryHandler<TQuery, TResult> handler) where TQuery : IQuery<TResult, TQuery>
-    {
-    }
+    public void ReturnQueryHandler<TQuery, TResult>(IQueryHandler<TQuery, TResult> handler)
+        where TQuery : IQuery<TResult, TQuery> { }
 }

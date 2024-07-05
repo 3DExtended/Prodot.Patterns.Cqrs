@@ -8,15 +8,16 @@ public class ToNullableExtTests
 {
     [Fact]
     public void Converting_options_to_nullable_on_custom_type_should_yield_null_for_None_and_the_value_for_Some() =>
-    Prop.ForAll<int?>(x =>
-        (x == null ? Option.None : CustomType.Create(x.Value).ToOption()).ToNullable(o => o.Value).Equals(x))
-      .QuickCheckThrowOnFailure();
+        Prop.ForAll<int?>(x =>
+                (x == null ? Option.None : CustomType.Create(x.Value).ToOption())
+                    .ToNullable(o => o.Value)
+                    .Equals(x)
+            )
+            .QuickCheckThrowOnFailure();
 
     [Fact]
     public void Converting_options_to_nullable_should_yield_null_for_None_and_the_value_for_Some() =>
-        Prop.ForAll<int?>(x =>
-            Option.From(x).ToNullable().Equals(x))
-        .QuickCheckThrowOnFailure();
+        Prop.ForAll<int?>(x => Option.From(x).ToNullable().Equals(x)).QuickCheckThrowOnFailure();
 
     private class CustomType
     {

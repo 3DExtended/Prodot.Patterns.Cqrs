@@ -6,21 +6,9 @@ public class CountQueryHandlerTests : EfCoreTestBase
     public async Task RunQueryAsync_ReturnsCorrectCount()
     {
         // Arrange
-        var entity1 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla1"
-        };
-        var entity2 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla2"
-        };
-        var entity3 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla3"
-        };
+        var entity1 = new TestEntity { Id = 0, StringProperty = "Bla1" };
+        var entity2 = new TestEntity { Id = 0, StringProperty = "Bla2" };
+        var entity3 = new TestEntity { Id = 0, StringProperty = "Bla3" };
 
         Context.Entities.Add(entity1);
         Context.Entities.Add(entity2);

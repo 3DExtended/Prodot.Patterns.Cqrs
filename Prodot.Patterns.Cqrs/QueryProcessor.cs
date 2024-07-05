@@ -9,30 +9,39 @@ public sealed class QueryProcessor : IQueryProcessor
     private readonly IQueryHandlerFactory _queryHandlerFactory;
     private readonly IQueryHandlerRegistry _queryHandlerRegistry;
 
-    public QueryProcessor(IQueryHandlerRegistry queryHandlerRegistry, IQueryHandlerFactory queryHandlerFactory)
+    public QueryProcessor(
+        IQueryHandlerRegistry queryHandlerRegistry,
+        IQueryHandlerFactory queryHandlerFactory
+    )
     {
         _queryHandlerRegistry = queryHandlerRegistry;
         _queryHandlerFactory = queryHandlerFactory;
-        _factoryMethodInfo = _queryHandlerFactory
-            .GetType()
-            .GetMethod(nameof(IQueryHandlerFactory.CreateQueryHandler)) ?? default!;
+        _factoryMethodInfo =
+            _queryHandlerFactory
+                .GetType()
+                .GetMethod(nameof(IQueryHandlerFactory.CreateQueryHandler)) ?? default!;
 
         if (_factoryMethodInfo is null)
         {
             throw new ArgumentException(
-                "Could not find CreateQueryHandler method on QueryHandlerFactory. Did you forget to implement it as a public method?");
+                "Could not find CreateQueryHandler method on QueryHandlerFactory. Did you forget to implement it as a public method?"
+            );
         }
     }
 
     [DebuggerStepThrough]
-    public async Task<Option<TResult>> RunQueryAsync<TQuery, TResult>(IQuery<TResult, TQuery> query,
-        CancellationToken cancellationToken) where TQuery : IQuery<TResult, TQuery>
+    public async Task<Option<TResult>> RunQueryAsync<TQuery, TResult>(
+        IQuery<TResult, TQuery> query,
+        CancellationToken cancellationToken
+    )
+        where TQuery : IQuery<TResult, TQuery>
     {
         ValidateQuery(query);
         var handler = GetHandlerHierarchyForQuery<TQuery, TResult>();
         try
         {
-            return await handler.RunQueryAsync((TQuery)query, cancellationToken)
+            return await handler
+                .RunQueryAsync((TQuery)query, cancellationToken)
                 .ConfigureAwait(false);
         }
         finally
@@ -42,8 +51,7 @@ public sealed class QueryProcessor : IQueryProcessor
                 var successor = handler.Successor;
                 _queryHandlerFactory.ReturnQueryHandler(handler);
                 handler = successor;
-            }
-            while (handler != null);
+            } while (handler != null);
         }
     }
 
@@ -52,7 +60,8 @@ public sealed class QueryProcessor : IQueryProcessor
     {
         foreach (var property in typeof(TQuery).GetProperties())
         {
-            var pipelineRuntimeValueAttributes = property.GetCustomAttributes(typeof(PipelineRuntimeValueAttribute))
+            var pipelineRuntimeValueAttributes = property
+                .GetCustomAttributes(typeof(PipelineRuntimeValueAttribute))
                 .Cast<PipelineRuntimeValueAttribute>()
                 .ToList();
             if (pipelineRuntimeValueAttributes.Count > 0)
@@ -61,12 +70,16 @@ public sealed class QueryProcessor : IQueryProcessor
                 var propertyTypeDefaultValue = property.PropertyType.IsValueType
                     ? Activator.CreateInstance(property.PropertyType)
                     : null;
-                var propertyHasDefaultValue = Equals(property.GetValue(query), propertyTypeDefaultValue);
+                var propertyHasDefaultValue = Equals(
+                    property.GetValue(query),
+                    propertyTypeDefaultValue
+                );
                 if (!propertyHasDefaultValue)
                 {
                     throw new ArgumentException(
                         "Properties marked with [PipelineRuntimeValueAttribute] must have default value on execution start.",
-                        property.Name);
+                        property.Name
+                    );
                 }
             }
             else
@@ -77,7 +90,8 @@ public sealed class QueryProcessor : IQueryProcessor
                 {
                     throw new ArgumentException(
                         "Properties not marked with [PipelineRuntimeValueAttribute] must not be null on execution start. For optional values, use Option<T>.",
-                        property.Name);
+                        property.Name
+                    );
                 }
             }
         }
@@ -87,19 +101,24 @@ public sealed class QueryProcessor : IQueryProcessor
     private IQueryHandler<TQuery, TResult> GetHandlerHierarchyForQuery<TQuery, TResult>()
         where TQuery : IQuery<TResult, TQuery>
     {
-        var pipeline = _queryHandlerRegistry.GetPipelineForQuery(typeof(TQuery), _queryHandlerFactory);
+        var pipeline = _queryHandlerRegistry.GetPipelineForQuery(
+            typeof(TQuery),
+            _queryHandlerFactory
+        );
         var firstHandler = GetRequestHandler<TQuery, TResult>(pipeline.Parts[0]);
         var currentHandler = firstHandler;
 
         // make sure to propagate query handler configuration if set
         if (pipeline.Parts[0].HandlerConfiguration != null)
         {
-            var configurationProperty = currentHandler.GetType()
+            var configurationProperty = currentHandler
+                .GetType()
                 .GetProperty(nameof(IConfigurableQueryHandler<int>.Configuration));
             if (configurationProperty is null)
             {
                 throw new ArgumentException(
-                    $"Found configuration value in pipeline but could not find configuration property on query handler {currentHandler.GetType().FullName}");
+                    $"Found configuration value in pipeline but could not find configuration property on query handler {currentHandler.GetType().FullName}"
+                );
             }
 
             configurationProperty!.SetValue(currentHandler, pipeline.Parts[0].HandlerConfiguration);
@@ -113,12 +132,14 @@ public sealed class QueryProcessor : IQueryProcessor
             // make sure to propagate query handler configuration if set
             if (part.HandlerConfiguration != null)
             {
-                var configurationProperty = nextHandler.GetType()
+                var configurationProperty = nextHandler
+                    .GetType()
                     .GetProperty(nameof(IConfigurableQueryHandler<int>.Configuration));
                 if (configurationProperty is null)
                 {
                     throw new ArgumentException(
-                        $"Found configuration value in pipeline but could not find configuration property on query handler {currentHandler.GetType().FullName}");
+                        $"Found configuration value in pipeline but could not find configuration property on query handler {currentHandler.GetType().FullName}"
+                    );
                 }
 
                 configurationProperty!.SetValue(nextHandler, part.HandlerConfiguration);
@@ -134,10 +155,17 @@ public sealed class QueryProcessor : IQueryProcessor
     }
 
     [DebuggerStepThrough]
-    private IQueryHandler<TQuery, TResult> GetRequestHandler<TQuery, TResult>(PipelinePart descriptor)
+    private IQueryHandler<TQuery, TResult> GetRequestHandler<TQuery, TResult>(
+        PipelinePart descriptor
+    )
         where TQuery : IQuery<TResult, TQuery>
     {
-        var method = _factoryMethodInfo.MakeGenericMethod(descriptor.HandlerType, typeof(TQuery), typeof(TResult));
-        return (IQueryHandler<TQuery, TResult>?)method.Invoke(_queryHandlerFactory, new object[0]) ?? default!;
+        var method = _factoryMethodInfo.MakeGenericMethod(
+            descriptor.HandlerType,
+            typeof(TQuery),
+            typeof(TResult)
+        );
+        return (IQueryHandler<TQuery, TResult>?)method.Invoke(_queryHandlerFactory, new object[0])
+            ?? default!;
     }
 }

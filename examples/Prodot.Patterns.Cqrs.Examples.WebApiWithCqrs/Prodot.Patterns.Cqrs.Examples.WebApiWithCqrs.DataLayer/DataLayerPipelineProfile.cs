@@ -10,12 +10,14 @@ public class DataLayerPipelineProfile : IPipelineProfile
         // since these pipelines use only one query handler, which is also the only respective implementation of IQueryHandler<TQuery, TResult>
         // we could get rid of these explicit registrations and use auto pipeline registration
         // however, we have it already and they coexist just fine
-        registerFunction(new PipelineBuilder<EmployeeQuery, Employee>()
-            .With<EmployeeQueryHandler>()
-            .Build());
+        registerFunction(
+            new PipelineBuilder<EmployeeQuery, Employee>().With<EmployeeQueryHandler>().Build()
+        );
 
-        registerFunction(new PipelineBuilder<EmployeeUpdateCommand, Unit>()
-            .With<EmployeeUpdateCommandHandler>()
-            .Build());
+        registerFunction(
+            new PipelineBuilder<EmployeeUpdateCommand, Unit>()
+                .With<EmployeeUpdateCommandHandler>()
+                .Build()
+        );
     }
 }

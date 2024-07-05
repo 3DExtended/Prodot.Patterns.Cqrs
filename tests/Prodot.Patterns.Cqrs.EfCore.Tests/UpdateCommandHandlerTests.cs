@@ -8,21 +8,9 @@ public class UpdateCommandHandlerTests : EfCoreTestBase
     public async Task RunQueryAsync_UpdatesEntityCorrectly()
     {
         // Arrange
-        var entity1 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla1"
-        };
-        var entity2 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla2"
-        };
-        var entity3 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla3"
-        };
+        var entity1 = new TestEntity { Id = 0, StringProperty = "Bla1" };
+        var entity2 = new TestEntity { Id = 0, StringProperty = "Bla2" };
+        var entity3 = new TestEntity { Id = 0, StringProperty = "Bla3" };
 
         Context.Entities.Add(entity1);
         Context.Entities.Add(entity2);
@@ -31,11 +19,7 @@ public class UpdateCommandHandlerTests : EfCoreTestBase
 
         var query = new TestModelUpdateCommand
         {
-            UpdatedModel = new()
-            {
-                Id = TestModelId.From(entity2.Id),
-                StringProperty = "Foo"
-            }
+            UpdatedModel = new() { Id = TestModelId.From(entity2.Id), StringProperty = "Foo" }
         };
         var subjectUnderTest = new TestModelUpdateCommandHandler(Mapper, ContextFactory);
 

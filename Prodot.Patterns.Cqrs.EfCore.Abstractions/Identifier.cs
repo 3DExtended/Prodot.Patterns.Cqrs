@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-
 using Prodot.Patterns.Cqrs.EfCore.Abstractions;
 
 namespace Prodot.Patterns.Cqrs.EfCore;
@@ -14,8 +13,7 @@ public record Identifier<TIdentifierValue, TSelf> : IIdentifier<TIdentifierValue
     {
         var ctor = typeof(TSelf)
             .GetTypeInfo()
-            .DeclaredConstructors
-            .First(c => c.GetParameters().Length == 0);
+            .DeclaredConstructors.First(c => c.GetParameters().Length == 0);
 
         var argsExp = new Expression[0];
         var newExp = Expression.New(ctor, argsExp);

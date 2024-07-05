@@ -6,31 +6,16 @@ public class ListOfModelQueryHandlerTests : EfCoreTestBase
     public async Task RunQueryAsync_RetrievesAllEntitiesCorrectly()
     {
         // Arrange
-        var entity1 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla1"
-        };
-        var entity2 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla2"
-        };
-        var entity3 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla3"
-        };
+        var entity1 = new TestEntity { Id = 0, StringProperty = "Bla1" };
+        var entity2 = new TestEntity { Id = 0, StringProperty = "Bla2" };
+        var entity3 = new TestEntity { Id = 0, StringProperty = "Bla3" };
 
         Context.Entities.Add(entity1);
         Context.Entities.Add(entity2);
         Context.Entities.Add(entity3);
         Context.SaveChanges();
 
-        var query = new TestModelsQuery
-        {
-            Ids = Option.None
-        };
+        var query = new TestModelsQuery { Ids = Option.None };
         var subjectUnderTest = new TestModelsQueryHandler(Mapper, ContextFactory);
 
         // Act
@@ -45,21 +30,9 @@ public class ListOfModelQueryHandlerTests : EfCoreTestBase
     public async Task RunQueryAsync_RetrievesSelectedEntitiesCorrectly()
     {
         // Arrange
-        var entity1 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla1"
-        };
-        var entity2 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla2"
-        };
-        var entity3 = new TestEntity
-        {
-            Id = 0,
-            StringProperty = "Bla3"
-        };
+        var entity1 = new TestEntity { Id = 0, StringProperty = "Bla1" };
+        var entity2 = new TestEntity { Id = 0, StringProperty = "Bla2" };
+        var entity3 = new TestEntity { Id = 0, StringProperty = "Bla3" };
 
         Context.Entities.Add(entity1);
         Context.Entities.Add(entity2);
@@ -68,7 +41,11 @@ public class ListOfModelQueryHandlerTests : EfCoreTestBase
 
         var query = new TestModelsQuery
         {
-            Ids = new List<TestModelId> { TestModelId.From(entity2.Id), TestModelId.From(entity3.Id) }
+            Ids = new List<TestModelId>
+            {
+                TestModelId.From(entity2.Id),
+                TestModelId.From(entity3.Id)
+            }
         };
         var subjectUnderTest = new TestModelsQueryHandler(Mapper, ContextFactory);
 

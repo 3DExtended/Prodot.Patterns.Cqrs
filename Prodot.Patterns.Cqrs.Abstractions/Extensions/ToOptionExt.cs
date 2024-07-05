@@ -20,17 +20,24 @@ public static class ToOptionExt
     /// <summary>
     ///   Wraps the value of this Nullable in a option or returns None.
     /// </summary>
-    public static Option<T> ToOption<T>(this T? nullable) where T : struct
+    public static Option<T> ToOption<T>(this T? nullable)
+        where T : struct
     {
         return Option.From(nullable);
     }
 
-    public static Option<TR> ToOptionMapped<T, TR>(this T? item, Func<T, TR> mapFn) where T : struct
+    public static Option<TR> ToOptionMapped<T, TR>(this T? item, Func<T, TR> mapFn)
+        where T : struct
     {
         return item.ToOption().Select(mapFn);
     }
 
-    public static Option<TR> ToOptionMappedOrNoneIf<T, TR>(this T item, T nullValue, Func<T, TR> mapFn) where T : struct
+    public static Option<TR> ToOptionMappedOrNoneIf<T, TR>(
+        this T item,
+        T nullValue,
+        Func<T, TR> mapFn
+    )
+        where T : struct
     {
         return item.Equals(nullValue) ? Option<TR>.None : mapFn(item);
     }
