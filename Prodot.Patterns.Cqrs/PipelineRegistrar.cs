@@ -10,7 +10,7 @@ public class PipelineRegistrar
     }
 
     public static implicit operator PipelineRegistrar(Action<Pipeline> registerFunction) =>
-        new PipelineRegistrar(registerFunction);
+        new(registerFunction);
 
     public void Register<TQuery, TResult>(Action<PipelineBuilder<TQuery, TResult>> builderConfig)
         where TQuery : IQuery<TResult, TQuery>
