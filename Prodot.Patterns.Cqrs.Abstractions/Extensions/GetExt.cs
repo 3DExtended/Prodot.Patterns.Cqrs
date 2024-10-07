@@ -31,6 +31,12 @@ public static class GetExt
         GetOrElse(option, () => fallback);
 
     /// <summary>
+    ///     Returns the value of the specified option if it has one or the given fallback.
+    /// </summary>
+    public static T GetOrRequiredElse<T>(this Option<T> option, T fallback) =>
+        GetOrElse(option, () => fallback)!;
+
+    /// <summary>
     ///     Returns the value of the specified option if it has one or executes the given fallback func and returns the produced value.
     /// </summary>
     /// <exception cref="ArgumentNullException">
