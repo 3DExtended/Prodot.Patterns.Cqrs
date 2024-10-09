@@ -3,5 +3,6 @@
 public abstract class ModelBase<TIdentifier, TIdentifierValue>
     where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
 {
-    public TIdentifier Id { get; set; } = default!;
+    public TIdentifier Id { get; set; } =
+        Identifier<TIdentifierValue, TIdentifier>.From((TIdentifierValue)default!);
 }
