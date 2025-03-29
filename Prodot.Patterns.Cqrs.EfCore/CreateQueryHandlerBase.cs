@@ -51,9 +51,17 @@ public abstract class CreateQueryHandlerBase<
             await context.Set<TEntity>().AddAsync(entity, cancellationToken).ConfigureAwait(false);
             await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            return Identifier<TIdentifierValue, TIdentifier>.From(entity.Id);
+            var id = Identifier<TIdentifierValue, TIdentifier>.From(entity.Id);
+            await AfterCreationAsync(query, id, cancellationToken).ConfigureAwait(false);
+            return id;
         }
     }
+
+    protected virtual Task AfterCreationAsync(
+        TQuery query,
+        TIdentifier id,
+        CancellationToken cancellationToken
+    ) => Task.CompletedTask;
 
     protected virtual Task<Option<TModel>> PrepareModelAsync(
         TModel model,
