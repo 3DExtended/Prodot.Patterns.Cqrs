@@ -3,6 +3,7 @@
 // Licensed under MIT License by @bomret
 
 using System.Collections;
+using FsCheck.Fluent;
 
 namespace Prodot.Patterns.Cqrs.Tests.Options;
 
