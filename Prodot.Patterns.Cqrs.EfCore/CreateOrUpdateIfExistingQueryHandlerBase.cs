@@ -1,6 +1,8 @@
-﻿namespace Prodot.Patterns.Cqrs.EfCore;
+﻿using System.Linq.Expressions;
 
-public abstract class CreateQueryHandlerBase<
+namespace Prodot.Patterns.Cqrs.EfCore;
+
+public abstract class CreateOrUpdateIfExistingQueryHandlerBase<
     TQuery,
     TModel,
     TIdentifier,
@@ -8,7 +10,7 @@ public abstract class CreateQueryHandlerBase<
     TContext,
     TEntity
 > : IQueryHandler<TQuery, TIdentifier>
-    where TQuery : CreateQuery<TModel, TIdentifier, TIdentifierValue, TQuery>
+    where TQuery : CreateOrUpdateIfExistingQuery<TModel, TIdentifier, TIdentifierValue, TQuery>
     where TModel : ModelBase<TIdentifier, TIdentifierValue>
     where TIdentifier : Identifier<TIdentifierValue, TIdentifier>, new()
     where TContext : DbContext
@@ -17,7 +19,10 @@ public abstract class CreateQueryHandlerBase<
     private readonly IDbContextFactory<TContext> _contextFactory;
     private readonly IMapper _mapper;
 
-    protected CreateQueryHandlerBase(IMapper mapper, IDbContextFactory<TContext> contextFactory)
+    protected CreateOrUpdateIfExistingQueryHandlerBase(
+        IMapper mapper,
+        IDbContextFactory<TContext> contextFactory
+    )
     {
         _mapper = mapper;
         _contextFactory = contextFactory;
@@ -48,7 +53,26 @@ public abstract class CreateQueryHandlerBase<
             }
 
             var entity = _mapper.Map<TEntity>(preparedModel.Get());
-            await context.Set<TEntity>().AddAsync(entity, cancellationToken).ConfigureAwait(false);
+
+            var existingEntity = await context
+                .Set<TEntity>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(GetPossiblyExistingEntity(query), cancellationToken)
+                .ConfigureAwait(false);
+
+            if (existingEntity != null)
+            {
+                _mapper.Map(entity, existingEntity);
+                context.Update(existingEntity);
+            }
+            else
+            {
+                await context
+                    .Set<TEntity>()
+                    .AddAsync(entity, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
             await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             var id = Identifier<TIdentifierValue, TIdentifier>.From(entity.Id);
@@ -57,15 +81,17 @@ public abstract class CreateQueryHandlerBase<
         }
     }
 
+    protected abstract Task<Option<TModel>> PrepareModelAsync(
+        TModel modelToCreate,
+        TContext context,
+        CancellationToken cancellationToken
+    );
+
+    protected abstract Expression<Func<TEntity, bool>> GetPossiblyExistingEntity(TQuery query);
+
     protected virtual Task AfterCreationAsync(
         TQuery query,
         TIdentifier id,
         CancellationToken cancellationToken
     ) => Task.CompletedTask;
-
-    protected virtual Task<Option<TModel>> PrepareModelAsync(
-        TModel model,
-        TContext context,
-        CancellationToken cancellationToken
-    ) => Task.FromResult(Option.From(model));
 }
