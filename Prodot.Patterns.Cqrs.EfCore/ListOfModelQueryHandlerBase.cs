@@ -39,7 +39,7 @@ public abstract class ListOfModelQueryHandlerBase<
                 .ConfigureAwait(false)
         )
         {
-            var databaseQuery = AddIncludes(context.Set<TEntity>().AsNoTracking());
+            var databaseQuery = AddWhere(AddIncludes(context.Set<TEntity>().AsNoTracking()), query);
 
             if (query.Ids.IsSome)
             {
@@ -67,4 +67,10 @@ public abstract class ListOfModelQueryHandlerBase<
     /// Override this method to add '.Include(...)' calls for retrieving the entities.
     /// </summary>
     protected virtual IQueryable<TEntity> AddIncludes(IQueryable<TEntity> queryable) => queryable;
+
+    /// <summary>
+    /// Override this method to add '.Where(...)' calls for retrieving the entities.
+    /// </summary>
+    protected virtual IQueryable<TEntity> AddWhere(IQueryable<TEntity> queryable, TQuery query) =>
+        queryable;
 }
