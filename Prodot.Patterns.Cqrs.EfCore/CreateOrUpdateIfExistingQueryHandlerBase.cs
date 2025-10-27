@@ -81,11 +81,11 @@ public abstract class CreateOrUpdateIfExistingQueryHandlerBase<
         }
     }
 
-    protected abstract Task<Option<TModel>> PrepareModelAsync(
+    protected virtual Task<Option<TModel>> PrepareModelAsync(
         TModel modelToCreate,
         TContext context,
         CancellationToken cancellationToken
-    );
+    ) => Task.FromResult(Option.From(modelToCreate));
 
     protected abstract Expression<Func<TEntity, bool>> GetPossiblyExistingEntity(TQuery query);
 
