@@ -56,14 +56,15 @@ public abstract class CreateOrUpdateIfExistingQueryHandlerBase<
 
             var existingEntity = await context
                 .Set<TEntity>()
-                .AsNoTracking()
                 .FirstOrDefaultAsync(GetPossiblyExistingEntity(query), cancellationToken)
                 .ConfigureAwait(false);
 
+            TIdentifierValue entityId;
             if (existingEntity != null)
             {
                 _mapper.Map(entity, existingEntity);
                 context.Update(existingEntity);
+                entityId = existingEntity.Id;
             }
             else
             {
@@ -71,11 +72,12 @@ public abstract class CreateOrUpdateIfExistingQueryHandlerBase<
                     .Set<TEntity>()
                     .AddAsync(entity, cancellationToken)
                     .ConfigureAwait(false);
+                entityId = entity.Id;
             }
 
             await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-            var id = Identifier<TIdentifierValue, TIdentifier>.From(entity.Id);
+            var id = Identifier<TIdentifierValue, TIdentifier>.From(entityId);
             await AfterCreationAsync(query, id, cancellationToken).ConfigureAwait(false);
             return id;
         }
