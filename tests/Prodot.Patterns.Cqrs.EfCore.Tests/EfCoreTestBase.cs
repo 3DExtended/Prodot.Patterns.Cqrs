@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Prodot.Patterns.Cqrs.EfCore.Tests;
 
@@ -17,15 +18,26 @@ public abstract class EfCoreTestBase : IDisposable
             .AddDbContextFactory<TestDbContext>(o =>
                 o.UseSqlite($"DataSource=file:memdb{_runIdentifier}?mode=memory&cache=shared")
             )
+            .AddLogging(logging =>
+            {
+                logging.AddConsole();
+                logging.SetMinimumLevel(LogLevel.Information);
+            })
             .BuildServiceProvider();
 
-        Mapper = new MapperConfiguration(o =>
-        {
-            o.CreateMap<TestModel, TestEntity>().ReverseMap();
-            o.CreateMap<TestEntity, TestEntity>();
-            o.CreateMap<TestModelId, int>().ConvertUsing((tmid, _) => tmid.Value);
-            o.CreateMap<int, TestModelId>().ConvertUsing((id, _) => TestModelId.From(id));
-        }).CreateMapper();
+        var loggerFactory =
+            ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>();
+
+        Mapper = new MapperConfiguration(
+            o =>
+            {
+                o.CreateMap<TestModel, TestEntity>().ReverseMap();
+                o.CreateMap<TestEntity, TestEntity>();
+                o.CreateMap<TestModelId, int>().ConvertUsing((tmid, _) => tmid.Value);
+                o.CreateMap<int, TestModelId>().ConvertUsing((id, _) => TestModelId.From(id));
+            },
+            loggerFactory
+        ).CreateMapper();
 
         // initialize test database
         ContextFactory = ServiceProvider.GetRequiredService<IDbContextFactory<TestDbContext>>();
