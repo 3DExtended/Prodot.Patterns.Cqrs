@@ -3,14 +3,17 @@
   <PropertyGroup>
     <PackageId>Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection</PackageId>
     <Title>Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection</Title>
-    <Description>Provides extension methods for using Prodot.Patterns.Cqrs with the Microsoft.Extensions.DependencyInjection DI container.</Description>
-    <PackageProjectUrl>https://www.nuget.org/packages/Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection</PackageProjectUrl>
+    <Description>Provides extension methods for using Prodot.Patterns.Cqrs with the
+      Microsoft.Extensions.DependencyInjection DI container.</Description>
+    <PackageProjectUrl>
+      https://www.nuget.org/packages/Prodot.Patterns.Cqrs.MicrosoftExtensionsDependencyInjection</PackageProjectUrl>
     <Authors>Philipp Gerling, Tim Vinkemeier</Authors>
     <Company>prodot GmbH</Company>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="10.0.0" />
     <PackageReference Include="Prodot.Patterns.Cqrs" Version="8.0.0.21" />
   </ItemGroup>
 
